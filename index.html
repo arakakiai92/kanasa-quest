@@ -210,6 +210,43 @@
       .map-info{ text-align:center; font-weight:800; font-size:1.25rem; min-height:1.6em; margin-top:10px; }
       .map-info small{ display:block; font-size:.95rem; color:var(--ink-soft); }
 
+      /* ---------- typing ---------- */
+      .type-word{ font-size:clamp(1.5rem,5dvh,2.1rem); font-weight:800; letter-spacing:.03em; line-height:1.35; margin:6px 0 2px; word-break:keep-all; }
+      .type-kana{ font-size:clamp(1.8rem,5.8dvh,2.55rem); font-weight:800; line-height:1.35; margin:6px 0 2px; }
+      .type-progress{ font-size:clamp(1.4rem,4.4dvh,1.95rem); font-weight:800; letter-spacing:.14em; min-height:1.4em; font-family:ui-monospace,Menlo,monospace; margin-top:4px; }
+      .type-progress .tp-done{ color:var(--good); }
+      .type-progress .tp-now{ color:var(--ink); border-bottom:5px solid var(--amber); border-radius:3px; }
+      .type-progress .tp-rest{ color:var(--ink-soft); opacity:.45; }
+      .kb-guide{ background:var(--panel); border:2px solid var(--line); border-radius:20px; padding:9px 7px; box-shadow:var(--shadow); margin-top:10px; }
+      .kb-row{ display:flex; justify-content:center; gap:4px; margin-bottom:4px; }
+      .kb-row:last-child{ margin-bottom:0; }
+      .kb-key{
+        width:9%; max-width:44px; aspect-ratio:1/1.05; display:flex; align-items:center; justify-content:center;
+        background:var(--panel2); border:2px solid var(--line); border-radius:9px;
+        font-weight:800; font-size:clamp(.8rem,3.4vw,1.05rem); text-transform:uppercase;
+      }
+      .kb-key.lit{ background:var(--amber); border-color:var(--amber-dark); color:var(--amber-ink); transform:scale(1.12); box-shadow:0 3px 0 var(--amber-dark); }
+      .type-note{ text-align:center; color:var(--ink-soft); font-weight:700; font-size:.84rem; margin:8px 0 0; line-height:1.5; }
+      .typing-hint{ display:none; align-self:center; background:var(--amber); color:var(--amber-ink); font-weight:800; font-size:.92rem; border-radius:999px; padding:6px 14px; margin:8px auto 0; text-align:center; }
+      .typing-hint.show{ display:block; }
+      #scr-typing{ position:relative; }
+      .typing-input{ position:absolute; left:50%; bottom:2px; width:24px; height:24px; opacity:.01; border:0; padding:0; margin:0; background:transparent; color:transparent; caret-color:transparent; pointer-events:none; font-size:16px; }
+      .type-flash{ animation:flashBad .25s ease; }
+      @keyframes flashBad{ 0%,100%{ transform:none; } 30%{ transform:translateX(-6px); } 65%{ transform:translateX(6px); } }
+      @media (prefers-reduced-motion: reduce){ .type-flash{ animation:none; } }
+      .type-level-list{ display:flex; flex-direction:column; gap:12px; margin-top:6px; }
+      .type-level-btn{
+        display:flex; align-items:center; gap:12px; text-align:left; width:100%;
+        background:var(--panel); border:2px solid var(--line); border-radius:18px; padding:16px; box-shadow:var(--shadow);
+      }
+      .type-level-btn:active{ transform:translateY(2px); box-shadow:none; }
+      .type-reveal{
+        background:var(--panel); border:2px solid var(--line); border-radius:18px; padding:14px;
+        box-shadow:var(--shadow); margin-top:10px; text-align:center;
+      }
+      .type-reveal-word{ font-size:1.9rem; font-weight:800; letter-spacing:.03em; }
+      .type-reveal-ja{ font-weight:800; color:var(--ink-soft); margin-top:2px; }
+
       /* ---------- english cards ---------- */
       .eng-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
       @media (min-width:560px){ .eng-grid{ grid-template-columns:repeat(4,1fr); } }
@@ -510,6 +547,7 @@
         <div class="sub-row">
           <button class="sub-btn" data-goto="scr-engcards">単語カード</button>
           <button class="sub-btn" data-goto="scr-prefstudy">都道府県いちらん</button>
+          <button class="sub-btn" data-goto="scr-typing-setup">タイピング</button>
         </div>
        </div>
       </section>
@@ -567,6 +605,63 @@
           <div class="feedback" id="quiz-feedback" aria-live="polite"></div>
         </div>
         <div id="quiz-answer-area"></div>
+      </section>
+
+      <!-- ============ TYPING SETUP ============ -->
+      <section class="screen" id="scr-typing-setup">
+        <div class="page-head">
+          <button class="back-btn" data-goto="scr-home">← もどる</button>
+          <h2 class="page-title">タイピング</h2>
+        </div>
+        <p class="page-lead">キーボードで ローマ字や えいごを 打つ れんしゅうだよ。ぜんぶで <span id="typing-qcount">20</span>もん。ミスなしで 打てたら <span id="typing-pts-clean">5</span> P、ミスしても 最後まで 打てたら <span id="typing-pts-miss">3</span> P もらえるよ。<br />キーボードは えいご入力（ABC）に きりかえてね。がめんを タップすると キーボードが 出るよ。</p>
+        <div class="type-level-list">
+          <button class="type-level-btn" data-typing-level="1">
+            <span><span class="diff-name">L1 もじさがし</span><br /><span class="diff-desc">ひらがな 1もじを ローマ字で 打とう（例：「う」→ u）</span></span>
+            <span class="diff-pts">ローマ字</span>
+          </button>
+          <button class="type-level-btn" data-typing-level="2">
+            <span><span class="diff-name">L2 たんご</span><br /><span class="diff-desc">ひらがなの たんごを ローマ字で 打とう（例：さくら → sakura）</span></span>
+            <span class="diff-pts">ローマ字</span>
+          </button>
+        </div>
+        <div class="level-select" style="margin-top:14px;">
+          <p class="level-select-label">L3 えいごの レベルを えらんでね</p>
+          <div class="view-toggle" style="margin-bottom:0;">
+            <button class="vt-btn" id="typing-lv-g5">小5レベル</button>
+            <button class="vt-btn" id="typing-lv-g6">小6レベル</button>
+          </div>
+          <p class="level-note" id="typing-lv-note"></p>
+        </div>
+        <div class="type-level-list">
+          <button class="type-level-btn" data-typing-level="3">
+            <span><span class="diff-name">L3 えいご</span><br /><span class="diff-desc">いみを 見て、英単語を タイピングしよう</span></span>
+            <span class="diff-pts">えいご</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- ============ TYPING PLAY ============ -->
+      <section class="screen" id="scr-typing">
+        <div class="quiz-top">
+          <button class="back-btn" id="typing-quit" style="margin:0;">← やめる</button>
+          <div class="quiz-progress"><div class="quiz-progress-fill" id="typing-progress-fill" style="width:0%;"></div></div>
+          <span class="quiz-count" id="typing-count">1 / 20</span>
+          <span class="quiz-timer" id="typing-timer">0:00</span>
+        </div>
+        <div class="question-card" id="typing-card">
+          <div class="question-label" id="typing-label">この もじを 打とう</div>
+          <div class="type-kana" id="typing-display"></div>
+          <div class="type-progress" id="typing-progress"></div>
+        </div>
+        <div class="mood-row">
+          <img id="typing-cat" alt="かなねこ" />
+          <div class="feedback" id="typing-feedback" aria-live="polite"></div>
+        </div>
+        <div class="typing-hint" id="typing-hint" role="status">キーボードを えいご入力（ABC）に きりかえてね</div>
+        <div id="typing-reveal" style="display:none;"></div>
+        <div class="kb-guide" id="kb-guide"></div>
+        <p class="type-note">キーボードで 打ってね。つぎに 打つ キーが ひかるよ。まちがえたら バックスペースで 1打鍵 もどせるよ。</p>
+        <input class="typing-input" id="typing-input" type="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" aria-label="タイピング入力" />
       </section>
 
       <!-- ============ RESULT ============ -->
@@ -765,7 +860,7 @@
     var POINT_SPEED_MULT = { slow: 0.5, normal: 1, fast: 2 };
     var POINT_SPEED_NAMES = { slow: "おそめ", normal: "ふつう", fast: "はやめ" };
     var DEFAULT_POINT_SPEED = "normal";
-    var MODE_NAMES = { capital: "県庁所在地クイズ", map: "日本地図クイズ", eng: "英語クイズ", review: "にがて ふくしゅう" };
+    var MODE_NAMES = { capital: "県庁所在地クイズ", map: "日本地図クイズ", eng: "英語クイズ", review: "にがて ふくしゅう", typing: "タイピング" };
     var ENG_LEVEL_NAMES = { g5: "小5レベル", g6: "小6レベル" };
     var DIFF_NAMES = { easy: "やさしい", normal: "ふつう", hard: "むずかしい" };
 
@@ -1141,6 +1236,7 @@
       currentScreen = id;
       window.scrollTo(0, 0);
       if (id === "scr-home") renderHome();
+      if (id === "scr-typing-setup") renderTypingSetup();
       if (id === "scr-rewards") renderRewards();
       if (id === "scr-parent") renderParent();
     }
@@ -2288,6 +2384,475 @@
         session = null;
         showScreen("scr-home");
       }, "つづける");
+    });
+
+    /* ================= typing =================
+       かのんクエストで修正済みの判定仕様をそのまま採用:
+       - 判定は候補の「中身（文字列）」と比べる。配列を for-in で回して
+         添字（"0","1"…）と比べるバグを入れない（isPrefixOfAny 参照）。
+       - 物理キーボードは e.code（キーの位置）を最優先で読み、レイアウトが
+         ずれていても押したキーそのものを判定する。
+       - IME／ソフトウェアキーボード経由の確定文字も hidden input から受ける。
+       - 判定できない打鍵（かな入力・変換中など）はミスに数えず、案内を出す。
+       - Backspace は「今の問題の入力途中だけ」を1打鍵ずつ戻す。打鍵前の
+         状態（typed と itemMistake）を毎回スナップショットするので、
+         ミスを取り消せばクリーンボーナス（5P）も復活する。 */
+    var ROMAJI = {
+      "あ": ["a"], "い": ["i"], "う": ["u"], "え": ["e"], "お": ["o"],
+      "か": ["ka"], "き": ["ki"], "く": ["ku"], "け": ["ke"], "こ": ["ko"],
+      "さ": ["sa"], "し": ["shi", "si"], "す": ["su"], "せ": ["se"], "そ": ["so"],
+      "た": ["ta"], "ち": ["chi", "ti"], "つ": ["tsu", "tu"], "て": ["te"], "と": ["to"],
+      "な": ["na"], "に": ["ni"], "ぬ": ["nu"], "ね": ["ne"], "の": ["no"],
+      "は": ["ha"], "ひ": ["hi"], "ふ": ["fu", "hu"], "へ": ["he"], "ほ": ["ho"],
+      "ま": ["ma"], "み": ["mi"], "む": ["mu"], "め": ["me"], "も": ["mo"],
+      "や": ["ya"], "ゆ": ["yu"], "よ": ["yo"],
+      "ら": ["ra"], "り": ["ri"], "る": ["ru"], "れ": ["re"], "ろ": ["ro"],
+      "わ": ["wa"], "を": ["wo", "o"], "ん": ["n", "nn"],
+      "が": ["ga"], "ぎ": ["gi"], "ぐ": ["gu"], "げ": ["ge"], "ご": ["go"],
+      "ざ": ["za"], "じ": ["ji", "zi"], "ず": ["zu"], "ぜ": ["ze"], "ぞ": ["zo"],
+      "だ": ["da"], "ぢ": ["di", "ji", "zi"], "づ": ["du", "zu"], "で": ["de"], "ど": ["do"],
+      "ば": ["ba"], "び": ["bi"], "ぶ": ["bu"], "べ": ["be"], "ぼ": ["bo"],
+      "ぱ": ["pa"], "ぴ": ["pi"], "ぷ": ["pu"], "ぺ": ["pe"], "ぽ": ["po"],
+      "きゃ": ["kya"], "きゅ": ["kyu"], "きょ": ["kyo"],
+      "しゃ": ["sha", "sya"], "しゅ": ["shu", "syu"], "しょ": ["sho", "syo"],
+      "ちゃ": ["cha", "tya", "cya"], "ちゅ": ["chu", "tyu", "cyu"], "ちょ": ["cho", "tyo", "cyo"],
+      "にゃ": ["nya"], "にゅ": ["nyu"], "にょ": ["nyo"],
+      "ひゃ": ["hya"], "ひゅ": ["hyu"], "ひょ": ["hyo"],
+      "みゃ": ["mya"], "みゅ": ["myu"], "みょ": ["myo"],
+      "りゃ": ["rya"], "りゅ": ["ryu"], "りょ": ["ryo"],
+      "ぎゃ": ["gya"], "ぎゅ": ["gyu"], "ぎょ": ["gyo"],
+      "じゃ": ["ja", "jya", "zya"], "じゅ": ["ju", "jyu", "zyu"], "じょ": ["jo", "jyo", "zyo"],
+      "びゃ": ["bya"], "びゅ": ["byu"], "びょ": ["byo"],
+      "ぴゃ": ["pya"], "ぴゅ": ["pyu"], "ぴょ": ["pyo"],
+      "ぁ": ["a", "la", "xa"], "ぃ": ["i", "li", "xi"], "ぅ": ["u", "lu", "xu"], "ぇ": ["e", "le", "xe"], "ぉ": ["o", "lo", "xo"],
+      "ゃ": ["ya", "lya", "xya"], "ゅ": ["yu", "lyu", "xyu"], "ょ": ["yo", "lyo", "xyo"], "っ": ["xtu", "ltu"]
+    };
+    function kanaTokens(kana) {
+      var toks = [], i = 0;
+      while (i < kana.length) {
+        var two = kana.substr(i, 2);
+        if (two.length === 2 && ROMAJI[two] && "ゃゅょ".indexOf(kana[i + 1]) >= 0) { toks.push(two); i += 2; }
+        else { toks.push(kana[i]); i += 1; }
+      }
+      return toks;
+    }
+    function validRomajiSet(kana) {
+      var toks = kanaTokens(kana);
+      var results = [""];
+      for (var t = 0; t < toks.length; t++) {
+        var opts = ROMAJI[toks[t]] || [toks[t]];
+        var next = [];
+        /* っ (sokuon): double the next consonant */
+        if (toks[t] === "っ" && t + 1 < toks.length) {
+          var nopts = ROMAJI[toks[t + 1]] || [];
+          for (var r = 0; r < results.length; r++)
+            for (var o = 0; o < nopts.length; o++)
+              if (!"aiueon".includes(nopts[o][0])) next.push(results[r] + nopts[o][0]);
+        }
+        for (var r2 = 0; r2 < results.length; r2++)
+          for (var o2 = 0; o2 < opts.length; o2++) next.push(results[r2] + opts[o2]);
+        results = next.slice(0, 4000);
+      }
+      var set = {};
+      results.forEach(function (s) { set[s] = true; });
+      return set;
+    }
+    function isPrefixOfAny(set, s) {
+      if (!set) return false;
+      /* targets は配列（["u"] 等）。for-in は添字 "0","1" を返すため、必ず値で比べる */
+      if (Array.isArray(set)) {
+        for (var i = 0; i < set.length; i++) if (typeof set[i] === "string" && set[i].indexOf(s) === 0) return true;
+        return false;
+      }
+      for (var k in set) if (k.indexOf(s) === 0) return true;
+      return false;
+    }
+    /* L1: ひらがな1文字（清音＋濁点・半濁点） */
+    var TYPE_L1_KANA = "あいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよらりるれろわをんがぎぐげござじずぜぞだぢづでどばびぶべぼぱぴぷぺぽ".split("");
+    /* L2: 小学生向けの身近なひらがな単語 */
+    var TYPE_L2_WORDS = [
+      "ねこ", "いぬ", "うさぎ", "さかな", "くま", "とり", "うま", "ぶた", "うし", "ひつじ",
+      "かえる", "へび", "さる", "ぞう", "きりん", "ぱんだ", "しか", "いるか", "ぺんぎん", "こあら",
+      "あめ", "ゆき", "ほし", "つき", "そら", "うみ", "かぜ", "くも", "はな", "たいよう",
+      "にじ", "やま", "かわ", "もり", "さくら", "はっぱ",
+      "すし", "うどん", "そば", "ごはん", "みそしる", "りんご", "みかん", "いちご", "ばなな", "すいか",
+      "もも", "ぶどう", "とまと", "にんじん", "たまご", "ぎゅうにゅう", "ぱん", "あいす", "さとう", "しお",
+      "がっこう", "せんせい", "ともだち", "かぞく", "あかちゃん", "ほん", "えんぴつ", "じょうぎ", "はさみ", "つくえ",
+      "いす", "かばん", "くつ", "ぼうし", "めがね", "とけい", "びょういん", "こうえん", "としょかん", "えき",
+      "どうぶつえん", "すいぞくかん",
+      "でんしゃ", "じてんしゃ", "ひこうき", "ふね", "くるま", "うた", "ぴあの", "たいこ", "やきゅう", "すいえい",
+      "かけっこ", "なわとび", "てつぼう", "すべりだい", "ぶらんこ", "じゃんけん", "かくれんぼ", "おにごっこ", "きっぷ"
+    ];
+    var TYPE_LEVEL_NAMES = { 1: "L1 もじさがし", 2: "L2 たんご", 3: "L3 えいご" };
+    var KB_ROWS = ["qwertyuiop", "asdfghjkl", "zxcvbnm"];
+    (function buildKb() {
+      var box = $("kb-guide");
+      if (!box) return;
+      var html = "";
+      KB_ROWS.forEach(function (row) {
+        html += '<div class="kb-row">';
+        for (var i = 0; i < row.length; i++) html += '<div class="kb-key" data-key="' + row[i] + '">' + row[i] + "</div>";
+        html += "</div>";
+      });
+      box.innerHTML = html;
+    })();
+
+    var typing = null;
+    function renderTypingSetup() {
+      var pair = scaledPoints([5, 3]);
+      $("typing-qcount").textContent = questionCount();
+      $("typing-pts-clean").textContent = pair[0];
+      $("typing-pts-miss").textContent = pair[1];
+      $("typing-lv-g5").classList.toggle("on", engLevelSel === "g5");
+      $("typing-lv-g6").classList.toggle("on", engLevelSel === "g6");
+      $("typing-lv-note").textContent = engLevelSel === "g5"
+        ? "小5レベル：ぜんぶで " + ENG5_WORDS.length + " ご から出るよ。"
+        : "小6レベル：ぜんぶで " + ENG_WORDS.length + " ご から出るよ。";
+    }
+    $("typing-lv-g5").addEventListener("click", function () { if (engLevelSel !== "g5") { engLevelSel = "g5"; renderTypingSetup(); } });
+    $("typing-lv-g6").addEventListener("click", function () { if (engLevelSel !== "g6") { engLevelSel = "g6"; renderTypingSetup(); } });
+
+    function typingBag(pool) {
+      /* 山札方式: シャッフルした山を使い切り、切れたら再シャッフル（境目で同じ項目が続かないようにする） */
+      var bag = shuffle(pool.slice());
+      return {
+        next: function () {
+          if (!bag.length) bag = shuffle(pool.slice());
+          return bag.pop();
+        },
+        refillAvoiding: function (lastItem) {
+          bag = shuffle(pool.slice());
+          if (pool.length > 1 && bag[bag.length - 1] === lastItem) {
+            var t = bag[bag.length - 1]; bag[bag.length - 1] = bag[0]; bag[0] = t;
+          }
+        }
+      };
+    }
+    function startTyping(level) {
+      var total = questionCount();
+      var items = [];
+      var i, bag, lastItem = null;
+      if (level === 1) {
+        bag = typingBag(TYPE_L1_KANA);
+        for (i = 0; i < total; i++) {
+          var kana = bag.next();
+          if (kana === lastItem) bag.refillAvoiding(lastItem);
+          if (kana === lastItem) kana = bag.next();
+          lastItem = kana;
+          items.push({ display: kana, targets: (ROMAJI[kana] || [kana]).slice(), missText: "「" + kana + "」は " + (ROMAJI[kana] || [""])[0] });
+        }
+      } else if (level === 2) {
+        bag = typingBag(TYPE_L2_WORDS);
+        for (i = 0; i < total; i++) {
+          var w = bag.next();
+          if (w === lastItem) bag.refillAvoiding(lastItem);
+          if (w === lastItem) w = bag.next();
+          lastItem = w;
+          var canon = kanaTokens(w).map(function (tk) { return (ROMAJI[tk] || [tk])[0]; }).join("");
+          items.push({ display: w, targets: Object.keys(validRomajiSet(w)), missText: "「" + w + "」は " + canon });
+        }
+      } else {
+        var pool = engPool(engLevelSel);
+        var idxs = pool.map(function (_, k) { return k; });
+        bag = typingBag(idxs);
+        for (i = 0; i < total; i++) {
+          var wi = bag.next();
+          if (wi === lastItem) bag.refillAvoiding(lastItem);
+          if (wi === lastItem) wi = bag.next();
+          lastItem = wi;
+          var ew = pool[wi];
+          var speakWord = ew[0].replace(/\(.*?\)/g, "").trim();
+          var clean = speakWord.toLowerCase().replace(/[^a-z]/g, "");
+          if (!clean) clean = "a";
+          items.push({
+            display: ew[1], emoji: ew[2] || "", targets: [clean],
+            answerWord: speakWord, answerJa: ew[1],
+            missText: "「" + ew[1] + "」は " + speakWord
+          });
+        }
+      }
+      typing = {
+        level: level, engLevel: engLevelSel, items: items, idx: 0, typed: "",
+        points: scaledPoints([5, 3]),
+        itemMistake: false, cleanItems: 0, doneItems: 0, earned: 0,
+        totalKeys: 0, goodKeys: 0, misses: [],
+        startAt: Date.now(), lock: false, history: [], hintShown: false, timerInt: null
+      };
+      typing.timerInt = setInterval(function () {
+        if (typing) $("typing-timer").textContent = fmtTime((Date.now() - typing.startAt) / 1000);
+      }, 500);
+      $("typing-timer").textContent = "0:00";
+      $("typing-cat").src = CAT.think;
+      showScreen("scr-typing");
+      renderTypingItem();
+    }
+    function typingTargets() { return typing.items[typing.idx].targets; }
+    function typingMinTarget() {
+      var ts = typingTargets(), best = ts[0];
+      for (var j = 0; j < ts.length; j++) if (ts[j].indexOf(typing.typed) === 0) { best = ts[j]; break; }
+      return best;
+    }
+    function renderTypingItem() {
+      var item = typing.items[typing.idx];
+      typing.typed = ""; typing.itemMistake = false; typing.history = [];
+      $("typing-count").textContent = (typing.idx + 1) + " / " + typing.items.length;
+      $("typing-progress-fill").style.width = (typing.idx / typing.items.length * 100) + "%";
+      $("typing-label").textContent = typing.level === 3 ? "いみを 見て えいごを 打とう" : (typing.level === 1 ? "この もじを ローマ字で 打とう" : "この たんごを ローマ字で 打とう");
+      var disp = $("typing-display");
+      disp.textContent = typing.level === 3 && item.emoji ? item.emoji + " " + item.display : item.display;
+      disp.className = typing.level === 3 ? "type-word" : "type-kana";
+      $("typing-feedback").textContent = "";
+      $("typing-feedback").className = "feedback";
+      $("typing-cat").src = CAT.think;
+      var rv = $("typing-reveal");
+      rv.style.display = "none"; rv.innerHTML = "";
+      renderTypingProgress();
+      var tinp = $("typing-input");
+      if (tinp) tinp.value = "";
+      focusTypingInput();
+    }
+    function focusTypingInput() {
+      var inp = $("typing-input");
+      if (!inp) return;
+      try { inp.focus({ preventScroll: true }); } catch (err) { try { inp.focus(); } catch (e2) {} }
+    }
+    function blurTypingInput() {
+      var inp = $("typing-input");
+      if (inp && document.activeElement === inp) { try { inp.blur(); } catch (e) {} }
+    }
+    function renderTypingProgress() {
+      var target = typingMinTarget();
+      var rest = target.slice(typing.typed.length);
+      var html = "";
+      if (typing.typed) html += '<span class="tp-done">' + esc(typing.typed) + "</span>";
+      if (rest) {
+        html += '<span class="tp-now">' + esc(rest[0]) + "</span>";
+        if (rest.length > 1) html += '<span class="tp-rest">' + esc(rest.slice(1)) + "</span>";
+      }
+      $("typing-progress").innerHTML = html || '<span class="tp-done">✓</span>';
+      var next = rest ? rest[0] : null;
+      document.querySelectorAll(".kb-key").forEach(function (k) {
+        k.classList.toggle("lit", k.getAttribute("data-key") === next);
+      });
+    }
+    /* ---- 入力の受け口 ----
+       物理キー: e.code（キーの位置）を最優先。OSレイアウトがずれていても
+       押したキーそのものの文字で判定する。e.key / keyCode はフォールバック。
+       IME・ソフトウェアキーボード: hidden input の確定文字を受ける。
+       どちらの経路でも同じ judgeTypingChar に集約し、二重判定は
+       typingLastJudge（同じ文字が150ms以内に再着したら捨てる）で防ぐ。 */
+    function resolveTypingChar(e) {
+      var code = e.code || "";
+      if (/^Key[A-Z]$/.test(code)) return code.charAt(3).toLowerCase();
+      var key = e.key || "";
+      if (/^[a-zA-Z]$/.test(key)) return key.toLowerCase();
+      var kc = e.keyCode || e.which || 0;
+      if (kc >= 65 && kc <= 90) return String.fromCharCode(kc + 32);
+      return null;
+    }
+    function isUnresolvableTypingKey(e) {
+      if (e.isComposing || e.keyCode === 229 || e.which === 229) return true;
+      var key = e.key || "";
+      if (key === "Process" || key === "Unidentified" || key === "Dead") return true;
+      if (key.length === 1 && /[^\x00-\x7F]/.test(key)) return true;
+      return false;
+    }
+    function showTypingHintOnce() {
+      if (!typing || typing.hintShown) return;
+      typing.hintShown = true;
+      var h = $("typing-hint");
+      if (h) h.classList.add("show");
+    }
+    var typingLastJudge = { ch: "", at: 0 };
+    function judgeTypingChar(key) {
+      if (currentScreen !== "scr-typing" || !typing || typing.lock) return;
+      typing.totalKeys++;
+      typingLastJudge = { ch: key, at: Date.now() };
+      /* 打鍵前の状態を毎回スナップショット（正解・ミス共通）。
+         Backspace で「直前の1打鍵だけ」を正確に取り消せるようにするため */
+      if (!typing.history) typing.history = [];
+      typing.history.push({ typed: typing.typed, itemMistake: typing.itemMistake });
+      var cand = typing.typed + key;
+      if (isPrefixOfAny(typingTargets(), cand)) {
+        typing.typed = cand;
+        typing.goodKeys++;
+        beep(520 + typing.typed.length * 18, 0.05, 0);
+        renderTypingProgress();
+        if (typing.itemMistake) {
+          var nx = typingMinTarget().slice(typing.typed.length, typing.typed.length + 1);
+          if (nx) $("typing-feedback").textContent = "つぎは 「" + nx.toUpperCase() + "」だよ";
+        }
+        var done = typingTargets().indexOf(typing.typed) >= 0;
+        if (done) completeTypingItem();
+      } else {
+        typing.itemMistake = true;
+        var card = $("typing-card");
+        card.classList.remove("type-flash");
+        void card.offsetWidth;
+        card.classList.add("type-flash");
+        sndBad();
+        try { if (navigator.vibrate) navigator.vibrate(70); } catch (e) {}
+        $("typing-cat").src = CAT.worried;
+        $("typing-feedback").textContent = "おしい！ つぎは 「" + (typingMinTarget().slice(typing.typed.length, typing.typed.length + 1) || key).toUpperCase() + "」だよ";
+        $("typing-feedback").className = "feedback bad";
+      }
+    }
+    function completeTypingItem() {
+      typing.lock = true;
+      var item = typing.items[typing.idx];
+      var sess = typing;
+      typing.doneItems++;
+      var pts;
+      if (!typing.itemMistake) { typing.cleanItems++; pts = typing.points[0]; }
+      else {
+        pts = typing.points[1];
+        if (typing.misses.indexOf(item.missText) < 0) typing.misses.push(item.missText);
+      }
+      typing.earned += pts;
+      floatPoints(pts);
+      sndGood();
+      $("typing-cat").src = typing.itemMistake ? CAT.wink : CAT.smile;
+      var fb = $("typing-feedback");
+      fb.textContent = typing.itemMistake ? "できた！ +" + pts + " P" : "かんぺき！ +" + pts + " P";
+      fb.className = "feedback good";
+      if (typing.level === 3) {
+        /* えいごは正解後に単語と意味を見せ、読み上げボタンも付ける */
+        var rv = $("typing-reveal");
+        rv.innerHTML = '<div class="type-reveal"><div class="type-reveal-word">' + esc(item.answerWord) + '</div>' +
+          '<div class="type-reveal-ja">' + esc(item.answerJa) + '</div>' +
+          '<button class="speak-btn" type="button" id="typing-speak-btn">🔊 おとを きく</button>' +
+          '<button class="next-btn" type="button" id="typing-next-btn">' + (typing.idx >= typing.items.length - 1 ? "けっかを みる" : "つぎの もんだいへ") + "</button></div>";
+        rv.style.display = "";
+        $("typing-speak-btn").addEventListener("click", function () { speakEn(item.answerWord); });
+        $("typing-next-btn").addEventListener("click", function () {
+          if (!typing || typing !== sess) return;
+          advanceTyping();
+        });
+        setTimeout(function () { speakEn(item.answerWord); }, 350);
+      } else {
+        setTimeout(function () {
+          if (!typing || typing !== sess) return;
+          advanceTyping();
+        }, 650);
+      }
+    }
+    function advanceTyping() {
+      typing.idx++;
+      typing.lock = false;
+      if (typing.idx >= typing.items.length) finishTypingSession();
+      else renderTypingItem();
+    }
+    function typingBackspace() {
+      if (currentScreen !== "scr-typing" || !typing || typing.lock) return;
+      if (!typing.history || typing.history.length === 0) return;
+      var snap = typing.history.pop();
+      if (typeof snap === "string") {
+        typing.typed = snap;
+      } else if (snap) {
+        typing.typed = snap.typed || "";
+        typing.itemMistake = !!snap.itemMistake;
+      }
+      if (!typing.itemMistake) {
+        $("typing-feedback").textContent = "";
+        $("typing-feedback").className = "feedback";
+        $("typing-cat").src = CAT.think;
+      }
+      renderTypingProgress();
+    }
+    document.addEventListener("keydown", function (e) {
+      if (currentScreen !== "scr-typing" || !typing || typing.lock) return;
+      if ($("modal-bg").classList.contains("open")) return;
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      if (e.key === "Backspace") { e.preventDefault(); typingBackspace(); return; }
+      var ch = resolveTypingChar(e);
+      if (ch) { e.preventDefault(); judgeTypingChar(ch); return; }
+      if (isUnresolvableTypingKey(e)) showTypingHintOnce();
+    });
+    (function wireTypingInput() {
+      var inp = $("typing-input");
+      if (!inp) return;
+      inp.addEventListener("keydown", function (e) {
+        if (e.key === "Backspace") e.preventDefault();
+      });
+      inp.addEventListener("beforeinput", function (e) {
+        if (e.inputType === "deleteContentBackward") { e.preventDefault(); typingBackspace(); }
+      });
+      inp.addEventListener("compositionend", function (e) {
+        var data = e.data || "";
+        if (data && !/[a-zA-Z]/.test(data)) showTypingHintOnce();
+      });
+      inp.addEventListener("input", function (e) {
+        if (e && e.inputType === "deleteContentBackward") { inp.value = ""; typingBackspace(); return; }
+        var raw = inp.value || "";
+        inp.value = "";
+        if (!raw) return;
+        var letters = raw.toLowerCase().replace(/[^a-z]/g, "");
+        if (!letters) { if (/[^\x00-\x7F]/.test(raw)) showTypingHintOnce(); return; }
+        for (var i = 0; i < letters.length; i++) {
+          if (!typing) break;
+          var ch = letters[i];
+          if (typingLastJudge.ch === ch && Date.now() - typingLastJudge.at < 150) {
+            typingLastJudge = { ch: "", at: 0 };
+            continue;
+          }
+          judgeTypingChar(ch);
+        }
+      });
+      var scr = $("scr-typing");
+      if (scr) scr.addEventListener("click", function (e) {
+        if (e.target && e.target.closest && e.target.closest("button")) return;
+        if (currentScreen === "scr-typing" && typing) focusTypingInput();
+      });
+    })();
+    function endTypingTimer() { if (typing && typing.timerInt) { clearInterval(typing.timerInt); typing.timerInt = null; } }
+    function finishTypingSession() {
+      var t = typing;
+      var sec = Math.round((Date.now() - t.startAt) / 1000);
+      endTypingTimer();
+      typing = null;
+      blurTypingInput();
+      var earned = t.earned;
+      S.points += earned;
+      S.totalEarned += earned;
+      applyPointsCap();
+      var levelSuffix = "・" + TYPE_LEVEL_NAMES[t.level] + (t.level === 3 ? "・" + ENG_LEVEL_NAMES[t.engLevel || "g6"] : "");
+      S.history.push({
+        date: Date.now(), mode: "typing",
+        label: MODE_NAMES.typing + levelSuffix,
+        correct: t.cleanItems, total: t.items.length, points: earned, sec: sec
+      });
+      save();
+      var ratio = t.items.length ? t.cleanItems / t.items.length : 0;
+      $("result-cat").src = ratio >= 0.8 ? CAT.celeb : (ratio >= 0.5 ? CAT.smile : CAT.spark);
+      $("result-title").textContent = ratio >= 0.8 ? "すごい！ よくできました！" : (ratio >= 0.5 ? "おつかれさま！" : "おつかれさま！ また がんばろう");
+      $("result-msg").textContent = "かなねこも よろこんでるよ。";
+      $("result-correct").textContent = t.cleanItems + " / " + t.items.length;
+      $("result-points").textContent = "+" + earned + " P";
+      $("result-time").textContent = fmtTime(sec);
+      var mp = $("result-miss-panel");
+      if (t.misses.length) {
+        mp.style.display = "";
+        var missShown = t.misses.slice(0, 6);
+        $("result-miss-list").innerHTML = missShown.map(function (m) {
+          return '<div class="history-item"><span>' + esc(m) + "</span></div>";
+        }).join("") + (t.misses.length > missShown.length ? '<div class="history-item"><span>… ほか ' + (t.misses.length - missShown.length) + " 件</span></div>" : "");
+      } else { mp.style.display = "none"; }
+      var doneLevel = t.level, doneEngLevel = t.engLevel;
+      showScreen("scr-result");
+      if (ratio >= 0.8) { sndClear(); launchConfetti(); }
+      $("result-again").onclick = function () { engLevelSel = doneEngLevel || "g6"; startTyping(doneLevel); };
+    }
+    $("typing-quit").addEventListener("click", function () {
+      if (!typing) { showScreen("scr-home"); return; }
+      showModal("やめる？", "とちゅうで やめると、この回の ポイントは もらえないよ。", "やめる", function () {
+        endTypingTimer();
+        typing = null;
+        blurTypingInput();
+        showScreen("scr-home");
+      }, "つづける");
+    });
+    document.querySelectorAll("[data-typing-level]").forEach(function (btn) {
+      btn.addEventListener("click", function () { startTyping(parseInt(btn.getAttribute("data-typing-level"), 10)); });
     });
 
     /* ================= 表示領域フィット（LINE内ブラウザ等のツールバー分を差し引く） ================= */
