@@ -3250,18 +3250,49 @@
       entry.updatedAt = Date.now();
       saveSync();
     }
-    function questHistorySyncFromFetch(serverList) {
+    /* ---- クレームゲート ----
+       approved クエストを自動クレームしてよいのは「この端末自身が報告した」
+       クエストだけ。判定キー：同期ストレージ（localStorage の
+       kanasa_quest_sync_v1 = SYNC）内のローカルクエスト履歴
+       SYNC.questHistory[id].status が "reported"
+       （表示ラベル「カーチャンかトーチャンの確認待ち」＝この端末が
+       quest_report を送って報告済みで、まだクレーム／確定していない状態）。
+       必ずサーバー取得で履歴を上書きする「前」の状態で判定する。 */
+    function locallyReportedQuestIds() {
+      var h = questHistoryEnsure();
+      var ids = {};
+      Object.keys(h).forEach(function (id) {
+        var e = h[id];
+        if (e && e.status === "reported") ids[id] = true;
+      });
+      return ids;
+    }
+    function questHistorySyncFromFetch(serverList, claimEligibleIds) {
       var h = questHistoryEnsure();
       var seen = {};
       (serverList || []).forEach(function (q) {
         if (!q || q.id == null) return;
         var id = String(q.id);
         seen[id] = true;
-        var eff = questEffectiveStatus(q);
         var prev = h[id];
+        var alreadyDone = SYNC.claimedQuestIds.indexOf(id) >= 0 || (prev && prev.status === "done");
+        /* ゲート不通過の approved は完全にスキップする：履歴エントリを
+           作らず、既存エントリのステータスも変えない（「取り消し」にも
+           「クリア！」にもしない）。seen には入れるので、サーバー一覧に
+           残っている間は消失時の突き合わせも発動しない（突き合わせは
+           一覧から消えた時に従来どおり行う）。 */
+        if (String(q.status || "") === "approved" && !alreadyDone && !(claimEligibleIds && claimEligibleIds[id])) {
+          return;
+        }
+        var eff = questEffectiveStatus(q);
         var status = eff || String(q.status || "active");
         if (SYNC.claimedQuestIds.indexOf(id) >= 0) status = "done";
         else if (prev && prev.status === "done") status = "done";
+        /* ゲート通過の approved は、クレームが確定するまで "reported" の
+           まま保持する（ゲート判定キーを保ち、クレームPOST失敗時や
+           途中終了時にも次回取得で再試行できるようにするため）。
+           成功時は claimQuest 側で "done"（クリア！）にする。 */
+        else if (status === "approved" && claimEligibleIds && claimEligibleIds[id]) status = "reported";
         questHistoryUpsert(id, q.title, q.points, status, q.child === "both");
       });
       /* 以前 active/reported/approved で見ていたのに今回の取得から消えたもの → 原則 取り消し（claim済みは done のまま）。
@@ -3353,7 +3384,19 @@
       claimInFlight[id] = true;
       relayPost({ token: TOKEN, action: "quest_claim", child: CHILD, id: id }).then(function (data) {
         delete claimInFlight[id];
-        if (!data || data.ok !== true) return;      /* 承認済みでなければ付与しない */
+        if (!data || data.ok !== true) {
+          /* クレームできなかった場合は履歴を "reported"（確認待ち）に戻し、
+             次回取得でゲートを通って再試行できるようにする */
+          try {
+            var hFail = questHistoryEnsure();
+            if (hFail[id] && hFail[id].status === "approved") {
+              hFail[id].status = "reported";
+              hFail[id].updatedAt = Date.now();
+              saveSync();
+            }
+          } catch (eF) {}
+          return;      /* 承認済みでなければ付与しない */
+        }
         if (SYNC.claimedQuestIds.indexOf(id) >= 0) return; /* 二重付与防止 */
         var pts = Number(data.points);
         if (!isFinite(pts) || pts < 0) pts = Number(q.points) || 0;
@@ -3368,10 +3411,13 @@
       });
     }
     function reconcileQuests(serverQuests) {
+      /* クレームゲート判定は、取得で履歴が上書きされる前のローカル状態で
+         行う（この端末が報告済み＝履歴ステータス "reported" のものだけ）。 */
+      var claimEligibleIds = locallyReportedQuestIds();
       questsCache = (serverQuests || []).filter(function (q) { return q && q.id != null; }).map(function (q) {
         return { id: String(q.id), title: String(q.title || ""), points: Number(q.points) || 0, status: String(q.status || ""), child: String(q.child || "") };
       });
-      try { questHistorySyncFromFetch(questsCache); } catch (eH) {}
+      try { questHistorySyncFromFetch(questsCache, claimEligibleIds); } catch (eH) {}
       /* pendingReports の掃除：サーバーが reported/approved を返したもの・一覧から消えたものは解除（サーバー状態が正） */
       var before = SYNC.pendingReports.length;
       SYNC.pendingReports = SYNC.pendingReports.filter(function (id) {
@@ -3382,7 +3428,10 @@
       if (SYNC.pendingReports.length !== before) saveSync();
       renderQuestChip();
       questsCache.forEach(function (q) {
-        if (q.status === "approved") claimQuest(q);
+        /* クレームゲート：この端末が報告した approved だけクレームする。
+           履歴に無い／見ただけで報告していない approved は、ポイントも
+           お祝いも履歴記録も無しでスキップする（報告した端末が受け取る）。 */
+        if (q.status === "approved" && claimEligibleIds[q.id]) claimQuest(q);
       });
       maybeShowQuestPopups();
     }
