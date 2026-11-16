@@ -334,7 +334,7 @@
       }
       main{ flex:1; min-height:0; width:100%; display:flex; flex-direction:column; padding:10px 12px 6px; }
       .screen.active{ display:flex; flex-direction:column; flex:1; min-height:0; overflow:hidden; }
-      /* ホーム・保護者メニュー・ごほうびは内側ボックスで縦スクロール可（下部の見切れ防止）。クイズ等のプレー画面は従来どおり固定。
+      /* ホーム・保護者メニュー・ごほうび・タイピング設定は内側ボックスで縦スクロール可（下部の見切れ防止）。クイズ等のプレー画面は従来どおり固定。
          スクロールは画面(flexコンテナ)自身ではなく、内側の専用ボックス(block)が担う。
          flexコンテナをスクローラにすると実機Safariでスクロールが効かず下部が見切れるため、この構造にする */
       .scroll-box{
@@ -497,6 +497,10 @@
       #scr-home .mode-tile{ min-height:0; height:100%; padding:8px; gap:6px; }
       #scr-home .tile-ico{ width:clamp(46px,9dvh,80px); height:clamp(46px,9dvh,80px); font-size:clamp(1.35rem,4.2dvh,2.25rem); }
       #scr-home .sub-row{ flex:none; margin-top:10px; }
+      /* typing setup（内側スクロールで全要素に届く。短い画面でも収まりやすいよう少し圧縮） */
+      #scr-typing-setup .type-level-btn{ padding:12px 14px; }
+      #scr-typing-setup .type-level-list{ gap:10px; margin-top:4px; }
+      #scr-typing-setup .level-select{ margin-bottom:2px; }
     </style>
   </head>
   <body>
@@ -609,6 +613,7 @@
 
       <!-- ============ TYPING SETUP ============ -->
       <section class="screen" id="scr-typing-setup">
+       <div class="scroll-box">
         <div class="page-head">
           <button class="back-btn" data-goto="scr-home">← もどる</button>
           <h2 class="page-title">タイピング</h2>
@@ -627,17 +632,18 @@
         <div class="level-select" style="margin-top:14px;">
           <p class="level-select-label">L3 えいごの レベルを えらんでね</p>
           <div class="view-toggle" style="margin-bottom:0;">
-            <button class="vt-btn" id="typing-lv-g5">小5レベル</button>
-            <button class="vt-btn" id="typing-lv-g6">小6レベル</button>
+            <button class="vt-btn" id="typing-lv-g5" aria-pressed="false">小5レベル</button>
+            <button class="vt-btn" id="typing-lv-g6" aria-pressed="true">小6レベル</button>
           </div>
           <p class="level-note" id="typing-lv-note"></p>
         </div>
         <div class="type-level-list">
           <button class="type-level-btn" data-typing-level="3">
-            <span><span class="diff-name">L3 えいご</span><br /><span class="diff-desc">いみを 見て、英単語を タイピングしよう</span></span>
-            <span class="diff-pts">えいご</span>
+            <span><span class="diff-name">L3 えいご</span><br /><span class="diff-desc" id="typing-l3-desc">小6レベル：いみを 見て、英単語を タイピングしよう</span></span>
+            <span class="diff-pts" id="typing-l3-chip">小6</span>
           </button>
         </div>
+       </div>
       </section>
 
       <!-- ============ TYPING PLAY ============ -->
@@ -2505,9 +2511,14 @@
       $("typing-pts-miss").textContent = pair[1];
       $("typing-lv-g5").classList.toggle("on", engLevelSel === "g5");
       $("typing-lv-g6").classList.toggle("on", engLevelSel === "g6");
+      $("typing-lv-g5").setAttribute("aria-pressed", engLevelSel === "g5" ? "true" : "false");
+      $("typing-lv-g6").setAttribute("aria-pressed", engLevelSel === "g6" ? "true" : "false");
       $("typing-lv-note").textContent = engLevelSel === "g5"
         ? "小5レベル：ぜんぶで " + ENG5_WORDS.length + " ご から出るよ。"
         : "小6レベル：ぜんぶで " + ENG_WORDS.length + " ご から出るよ。";
+      /* 選んだレベルは L3ボタン自体にも表示する（注記が見切れても選択が分かるように） */
+      $("typing-l3-desc").textContent = ENG_LEVEL_NAMES[engLevelSel] + "：いみを 見て、英単語を タイピングしよう";
+      $("typing-l3-chip").textContent = engLevelSel === "g5" ? "小5" : "小6";
     }
     $("typing-lv-g5").addEventListener("click", function () { if (engLevelSel !== "g5") { engLevelSel = "g5"; renderTypingSetup(); } });
     $("typing-lv-g6").addEventListener("click", function () { if (engLevelSel !== "g6") { engLevelSel = "g6"; renderTypingSetup(); } });
@@ -2868,8 +2879,8 @@
     /* ================= scroll lock (誤タップ防止) ================= */
     document.addEventListener("touchmove", function (e) {
       if (e.target && e.target.closest && e.target.closest("input, textarea, select")) return;
-      /* ホーム・保護者メニュー・ごほうび画面のスクロールボックスの中だけはタッチスクロールを許可する */
-      if (e.target && e.target.closest && e.target.closest("#scr-home .scroll-box, #scr-parent .scroll-box, #scr-rewards .scroll-box, #scr-result #result-miss-list")) return;
+      /* ホーム・保護者メニュー・ごほうび・タイピング設定画面のスクロールボックスの中だけはタッチスクロールを許可する */
+      if (e.target && e.target.closest && e.target.closest("#scr-home .scroll-box, #scr-parent .scroll-box, #scr-rewards .scroll-box, #scr-typing-setup .scroll-box, #scr-result #result-miss-list")) return;
       if (e.cancelable) e.preventDefault();
     }, { passive: false });
 
