@@ -3044,7 +3044,7 @@
     var CHILD = "kanasa";
     var APP_VERSION = "sync-1";
     var SYNC_KEY = "kanasa_quest_sync_v1";
-    var SYNC_INTERVAL_MS = 3 * 60 * 1000;
+    var SYNC_INTERVAL_MS = 60 * 1000;
 
     function defaultSyncState() {
       return { lastSyncAt: 0, pendingProgress: false, pendingReports: [], claimedQuestIds: [], seenActiveQuestIds: [], questHistory: {}, appliedAdjustmentIds: [], pendingAdjustmentAcks: [], pendingAdjustedSync: false, lastAdjustmentNote: "" };
@@ -3079,6 +3079,9 @@
     var questsFetchInFlight = false;
     var adjustmentsFetchInFlight = false;
     var adjustAckInFlight = {};
+    var syncCycleInFlight = false;
+    var syncCyclePending = false;
+    var relayCacheBusterSeq = 0;
 
     function syncStatusText() {
       var base = SYNC.lastSyncAt ? ("同期：" + fmtDate(SYNC.lastSyncAt)) : "同期：まだ";
@@ -3110,7 +3113,12 @@
         try {
           if (typeof fetch !== "function") { resolve(null); return; }
           var qs = Object.keys(params).map(function (k) { return encodeURIComponent(k) + "=" + encodeURIComponent(params[k]); }).join("&");
-          fetch(RELAY_URL + "?" + qs, { method: "GET" })
+          /* iOS等で古いGETレスポンス（「クエストなし」等）がHTTPキャッシュから
+             返り続けないよう、毎回異なるキャッシュバスターを付け、
+             fetchにも cache:"no-store" を指定する */
+          relayCacheBusterSeq++;
+          qs += (qs ? "&" : "") + "_=" + Date.now() + "-" + relayCacheBusterSeq;
+          fetch(RELAY_URL + "?" + qs, { method: "GET", cache: "no-store" })
             .then(function (res) {
               if (!res) { resolve(null); return; }
               try {
@@ -3630,9 +3638,25 @@
 
     /* ---- sync triggers ---- */
     function syncCycle() {
-      try { sendProgress(); } catch (e) {}
-      try { fetchQuests(); } catch (e) {}
-      try { fetchAdjustments(); } catch (e) {}
+      /* トリガー（起動／タイマー／visibility／focus／pageshow）が連続・同時多発しても
+         取得処理が多重に走らないよう in-flight ガードをかける。
+         実行中に来たトリガーは捨てず、終わったあとに1回だけ追走する。
+         クエスト取得・調整取得それぞれの in-flight ガード、claim／adjust_applied の
+         実行済み管理、ポップアップの表示済み管理（seenPopupIds）と合わせて二重実行を防ぐ。 */
+      if (syncCycleInFlight) { syncCyclePending = true; return; }
+      syncCycleInFlight = true;
+      var jobs = [];
+      try { jobs.push(Promise.resolve(sendProgress())); } catch (e) {}
+      try { jobs.push(Promise.resolve(fetchQuests())); } catch (e) {}
+      try { jobs.push(Promise.resolve(fetchAdjustments())); } catch (e) {}
+      var finishSyncCycle = function () {
+        syncCycleInFlight = false;
+        if (syncCyclePending) {
+          syncCyclePending = false;
+          syncCycle();
+        }
+      };
+      Promise.all(jobs).then(finishSyncCycle, finishSyncCycle);
     }
     function startSync() {
       try { $("quest-mascot").src = CAT.smile; } catch (e) {}
@@ -3643,6 +3667,11 @@
       document.addEventListener("visibilitychange", function () {
         if (!document.hidden) syncCycle();
       });
+      /* iOSのスタンドアロンWebアプリでは visibilitychange を取りこぼすことがあるため、
+         アプリに戻った合図を window の focus と pageshow（bfcache復帰も拾う）でも拾い、
+         戻った瞬間に取得を始める。3つが連続発火しても syncCycle のガードで1回にまとまる。 */
+      window.addEventListener("focus", function () { syncCycle(); });
+      window.addEventListener("pageshow", function () { syncCycle(); });
     }
 
     /* ================= 表示領域フィット（LINE内ブラウザ等のツールバー分を差し引く） ================= */
