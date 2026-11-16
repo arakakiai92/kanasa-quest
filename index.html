@@ -307,6 +307,93 @@
       .seg-btn.on{ background:var(--teal); color:#fff; border-color:var(--teal); }
       .danger-btn{ display:block; width:100%; background:var(--panel); color:var(--bad); border:2px solid var(--bad); font-weight:800; border-radius:999px; padding:13px; font-size:1.05rem; }
 
+      /* ---------- emergency quests / sync : ALERT styling (deliberately unlike normal learning UI) ---------- */
+      .quest-area{
+        background:linear-gradient(135deg,#FF3B30 0%,#FF6B1A 55%,#FF8A00 100%);
+        border:4px solid #C81E1E;border-radius:16px;padding:8px 10px;flex:0 0 auto;
+        box-shadow:0 0 0 3px #FFD60A,0 6px 18px rgba(200,30,30,.45);
+        color:#fff;
+        animation:questPulse 1.6s ease-in-out infinite;
+      }
+      @keyframes questPulse{
+        0%,100%{box-shadow:0 0 0 3px #FFD60A,0 6px 18px rgba(200,30,30,.45);}
+        50%{box-shadow:0 0 0 6px #FFE45C,0 6px 26px rgba(255,107,26,.75);}
+      }
+      @media (prefers-reduced-motion: reduce){.quest-area{animation:none;}}
+      @media (prefers-color-scheme: dark){.quest-area{border-color:#FF6B5E;box-shadow:0 0 0 3px #FFD60A,0 6px 18px rgba(0,0,0,.6);}}
+      .quest-area-head{display:flex;align-items:center;gap:8px;font-weight:800;font-size:1.05rem;margin-bottom:2px;color:#fff;letter-spacing:.02em;}
+      .quest-alert-badge{
+        display:inline-flex;align-items:center;gap:3px;background:#fff;color:#C81E1E;
+        font-weight:800;font-size:.78rem;border-radius:999px;padding:2px 9px;white-space:nowrap;
+        box-shadow:0 2px 0 rgba(0,0,0,.25);
+      }
+      .quest-row{display:flex;align-items:center;gap:10px;padding:7px 0;border-top:2px dashed rgba(255,255,255,.55);}
+      .quest-row-main{flex:1;min-width:0;}
+      .quest-row-title{font-weight:800;font-size:1rem;line-height:1.3;color:#fff;}
+      .quest-row-sub{font-weight:800;font-size:.84rem;color:#FFF3C4;line-height:1.35;}
+      .quest-row-sub .quest-points{color:#fff;}
+      .quest-row-sub .qr-line{display:block;}
+      .quest-row-sub .qr-nowrap{white-space:nowrap;}
+      .quest-done-btn{background:#fff;color:#C81E1E;font-weight:800;border-radius:999px;padding:9px 16px;font-size:1rem;box-shadow:0 3px 0 rgba(0,0,0,.35);white-space:nowrap;border:3px solid #C81E1E;}
+      .quest-done-btn:active{transform:translateY(2px);box-shadow:0 1px 0 rgba(0,0,0,.35);}
+      .sync-status{font-weight:700;color:var(--ink-soft);font-size:.88rem;}
+      /* quest alert popups */
+      .quest-modal-box{padding:0;overflow:hidden;border:4px solid #C81E1E;text-align:center;}
+      .quest-modal-head{
+        background:linear-gradient(135deg,#FF3B30,#FF6B1A);color:#fff;font-weight:800;
+        font-size:1.35rem;letter-spacing:.03em;padding:12px 14px 10px;line-height:1.25;
+      }
+      .quest-modal-head .quest-alert-badge{vertical-align:2px;margin-right:6px;}
+      .quest-modal-body{padding:12px 20px 20px;}
+      .quest-modal-body .modal-mascot{width:clamp(84px,15dvh,112px);height:clamp(84px,15dvh,112px);}
+      .quest-modal-body .modal-title{margin:6px 0 4px;font-size:1.3rem;color:#C81E1E;}
+      .quest-modal-body .modal-text{font-weight:700;color:var(--ink-soft);line-height:1.6;margin:0 0 16px;}
+      .quest-modal-ok{background:#E2481A !important;color:#fff !important;box-shadow:0 4px 0 #9E2B0E;}
+      .quest-modal-ok:active{transform:translateY(2px);box-shadow:0 1px 0 #9E2B0E;}
+      .celebration-modal-box{border-color:#E8A90C;}
+      .celebration-modal-box .quest-modal-head{background:linear-gradient(135deg,#FF8A00,#FFC53D);color:#5A2E00;}
+      .celebration-modal-box .quest-modal-body .modal-title{color:#B45309;}
+      @media (prefers-color-scheme: dark){
+        .quest-modal-box{border-color:#FF6B5E;}
+        .quest-modal-body .modal-title{color:#FF9D8A;}
+        .celebration-modal-box .quest-modal-body .modal-title{color:#FFC53D;}
+      }
+      /* quest history screen */
+      .qh-list{display:flex;flex-direction:column;gap:8px;}
+      .qh-item{background:var(--panel);border:3px solid var(--line);border-radius:14px;padding:9px 11px;box-shadow:var(--shadow);}
+      .qh-item-top{display:flex;align-items:flex-start;gap:8px;}
+      .qh-title{flex:1;min-width:0;font-weight:800;font-size:.98rem;line-height:1.35;}
+      .qh-points{font-weight:800;color:var(--coral-dark);white-space:nowrap;font-size:.95rem;}
+      @media (prefers-color-scheme: dark){ .qh-points{ color:#FF9B7A; } }
+      .qh-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:5px;}
+      .qh-date{font-weight:700;font-size:.78rem;color:var(--ink-soft);}
+      .qh-status{font-weight:800;font-size:.78rem;border-radius:999px;padding:2px 9px;white-space:nowrap;}
+      .qh-status-active{background:#FFE1D6;color:#9E2B0E;border:2px solid #FF6B1A;}
+      .qh-status-reported{background:#FFF3D6;color:#7A5200;border:2px solid var(--amber-dark);}
+      .qh-status-approved{background:#D9F2E3;color:#14632F;border:2px solid var(--good);}
+      .qh-status-done{background:#159A8C;color:#fff;border:2px solid var(--teal-dark);}
+      .qh-status-cancelled{background:var(--panel2);color:var(--ink-soft);border:2px solid var(--line);}
+      .qh-status-sibling{background:#E8E4F7;color:#4A3D8F;border:2px solid #8B7FD4;}
+      .qh-empty{text-align:center;font-weight:800;color:var(--ink-soft);line-height:1.7;padding:22px 10px;}
+      @media (max-height:620px){
+        .quest-modal-head{font-size:1.12rem;padding:8px 10px 7px;}
+        .quest-modal-body{padding:8px 14px 12px;}
+        .quest-modal-body .modal-mascot{width:64px;height:64px;}
+        .quest-modal-body .modal-title{font-size:1.12rem;margin:3px 0;}
+        .quest-modal-body .modal-text{margin-bottom:10px;font-size:.92rem;}
+        .quest-modal-body .modal-btns button{padding:10px;}
+        .quest-area{padding:6px 8px;}
+        .quest-area-head{font-size:.95rem;}
+        .quest-row{padding:4px 0;}
+        .quest-row-title{font-size:.92rem;}
+        .quest-row-sub{font-size:.78rem;}
+        .quest-done-btn{padding:6px 12px;font-size:.92rem;}
+      }
+      /* ホームのレイアウト安全：クエストチップは自然な高さ（flex:none）で流れに置き、
+         モードグリッドは最小高さを保ったまま残りを埋める。背の高いチップが出ても
+         グリッドが潰れて重なることはなく、収まらない分は scroll-box のスクロールで届く */
+      #scr-home .quest-area{ flex:none; margin-top:10px; }
+
       /* ---------- modal / confetti ---------- */
       .modal-bg{ display:none; position:fixed; inset:0; background:rgba(10,30,34,.55); z-index:50; align-items:center; justify-content:center; padding:20px; }
       .modal-bg.open{ display:flex; }
@@ -520,6 +607,11 @@
             <div class="points-cap" id="home-points-cap"></div>
           </div>
           <button class="adult-menu-btn" id="adult-btn" aria-label="おとな用メニュー" title="おとな用">⋮</button>
+        </div>
+
+        <div class="quest-area" id="quest-home-area" style="display:none;" role="alert">
+          <div class="quest-area-head"><span class="quest-alert-badge">⚠ 緊急</span>緊急クエスト！</div>
+          <div id="quest-chip-list"></div>
         </div>
 
         <div class="home-hero">
@@ -751,6 +843,18 @@
        </div>
       </section>
 
+      <!-- ============ QUEST HISTORY ============ -->
+      <section class="screen" id="scr-quest-history">
+       <div class="scroll-box">
+        <div class="page-head">
+          <button class="back-btn" data-goto="scr-home">← もどる</button>
+          <h2 class="page-title">緊急クエストの きろく</h2>
+        </div>
+        <p class="page-lead">いままでの 緊急クエストが 見られるよ。新しいものが 上に あるよ。</p>
+        <div class="qh-list" id="quest-history-list"></div>
+       </div>
+      </section>
+
       <!-- ============ PARENT ============ -->
       <section class="screen" id="scr-parent">
        <div class="scroll-box">
@@ -774,6 +878,19 @@
           <div class="history-item"><span>累計ポイント（レベル用）</span><span class="h-pts" id="parent-total">0 P</span></div>
           <div class="history-item"><span>レベル</span><span class="h-pts" id="parent-level">Lv.1</span></div>
           <div class="history-item"><span>にがてな県</span><span class="h-pts" id="parent-weak">0 県</span></div>
+          <div class="history-item"><span>最終同期</span><span class="sync-status" id="parent-sync-status">同期：まだ</span></div>
+          <div style="margin-top:16px;">
+            <div style="font-weight:800;font-size:1.05rem;margin-bottom:6px;">ポイント調整</div>
+            <p style="font-weight:700;color:var(--ink-soft);font-size:.88rem;line-height:1.6;margin:0 0 10px;">残高と累計の両方に同じ量を反映します（レベルも自動で合い直されます）。どちらも0未満にはならず、ふやすときは所持ポイントの上限までです。</p>
+            <div style="font-weight:700;color:var(--ink-soft);margin-bottom:8px;">現在の残高：<span id="padjust-balance" style="font-weight:800;color:var(--ink);">0</span> P（累計 <span id="padjust-total">0</span> P）</div>
+            <label class="form-label" for="padjust-amount">調整する量（P）</label>
+            <input class="form-input" id="padjust-amount" type="number" inputmode="numeric" min="1" max="9999999" placeholder="例：50" />
+            <div style="display:flex;gap:8px;margin-top:10px;">
+              <button type="button" class="mini-btn save" id="padjust-plus" style="flex:1;padding:10px 14px;font-size:1rem;">＋ ふやす</button>
+              <button type="button" class="mini-btn" id="padjust-minus" style="flex:1;padding:10px 14px;font-size:1rem;">− へらす</button>
+            </div>
+            <div class="feedback" id="padjust-msg" style="min-height:1.4rem;font-size:1rem;text-align:left;" aria-live="polite"></div>
+          </div>
         </div>
 
         <div class="card-panel parent-panel" id="pp-settings">
@@ -825,6 +942,7 @@
       <div class="modal-box adult-box">
         <h3>おとな用</h3>
         <button class="adult-item" id="adult-rewards"><span class="sb-star">★</span>ごほうび</button>
+        <button class="adult-item" id="adult-quest-history">緊急クエストの きろく</button>
         <button class="adult-item" id="adult-parent">保護者メニュー</button>
         <button class="modal-cancel adult-close" id="adult-close">とじる</button>
       </div>
@@ -836,6 +954,33 @@
         <div class="modal-btns">
           <button class="modal-cancel" id="modal-cancel">やめる</button>
           <button class="modal-ok" id="modal-ok">OK</button>
+        </div>
+      </div>
+    </div>
+    <div class="modal-bg" id="quest-back">
+      <div class="modal-box quest-modal-box">
+        <div class="quest-modal-head"><span class="quest-alert-badge">⚠ 緊急</span>緊急クエスト！</div>
+        <div class="quest-modal-body">
+          <img class="modal-mascot" id="quest-mascot" alt="かなねこ" />
+          <h3 class="modal-title" id="quest-popup-title"></h3>
+          <p class="modal-text" id="quest-popup-points"></p>
+          <div class="modal-btns">
+            <button class="modal-cancel" id="quest-later">あとで</button>
+            <button class="modal-ok quest-modal-ok" id="quest-do">わかった！</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-bg" id="celebration-back">
+      <div class="modal-box quest-modal-box celebration-modal-box">
+        <div class="quest-modal-head"><span class="quest-alert-badge">★ クリア</span>緊急クエスト クリア！</div>
+        <div class="quest-modal-body">
+          <img class="modal-mascot" id="celebration-mascot" alt="かなねこ" />
+          <h3 class="modal-title">やったね！</h3>
+          <p class="modal-text" id="celebration-text"></p>
+          <div class="modal-btns">
+            <button class="modal-ok quest-modal-ok" id="celebration-ok">OK</button>
+          </div>
         </div>
       </div>
     </div>
@@ -921,6 +1066,23 @@
       var cap = pointsCap();
       if (cap !== null && S.points > cap) { S.points = cap; return true; }
       return false;
+    }
+    /* ポイント増減の共通処理：保護者メニューの「ポイント調整」と
+       ダッシュボード起点の調整予約でまったく同じセマンティクスにする。
+       プラスは累計に満額・残高は上限で頭打ち、マイナスは残高・累計とも0でフロア。
+       レベルは totalEarned から levelOf() で都度計算されるので自動で合い直される。 */
+    function applyPointDelta(delta) {
+      var d = Number(delta) || 0;
+      if (d > 0) {
+        var cap = pointsCap();
+        S.totalEarned += d;
+        S.points = cap !== null ? Math.min(S.points + d, cap) : (S.points + d);
+      } else if (d < 0) {
+        var amt = -d;
+        S.points = Math.max(0, S.points - amt);
+        S.totalEarned = Math.max(0, S.totalEarned - amt);
+      }
+      save();
     }
     function parseRewardCost(rawVal) {
       var s = String(rawVal == null ? "" : rawVal).trim();
@@ -1241,7 +1403,8 @@
       if (sb) sb.scrollTop = 0;
       currentScreen = id;
       window.scrollTo(0, 0);
-      if (id === "scr-home") renderHome();
+      if (id === "scr-home") { renderHome(); try { maybeShowQuestPopups(); } catch (e) {} }
+      if (id === "scr-quest-history") { try { renderQuestHistory(); } catch (e) {} }
       if (id === "scr-typing-setup") renderTypingSetup();
       if (id === "scr-rewards") renderRewards();
       if (id === "scr-parent") renderParent();
@@ -1257,6 +1420,7 @@
     $("adult-bg").addEventListener("click", function (e) { if (e.target === $("adult-bg")) closeAdult(); });
     $("adult-rewards").addEventListener("click", function () { closeAdult(); showScreen("scr-rewards"); });
     $("adult-parent").addEventListener("click", function () { closeAdult(); showScreen("scr-parent"); });
+    $("adult-quest-history").addEventListener("click", function () { closeAdult(); showScreen("scr-quest-history"); });
 
     /* ================= modal ================= */
     var modalCb = null;
@@ -1338,6 +1502,7 @@
         S.points -= r.cost;
         S.exchanges.push({ date: Date.now(), name: r.name, cost: r.cost });
         save();
+        try { sendProgress(); } catch (e) {}
         renderRewards();
         showModal("こうかん できた！", "「" + r.name + "」と こうかんしたよ。おうちの人に 見せてね。", "OK", null);
       });
@@ -1351,6 +1516,9 @@
       $("parent-total").textContent = S.totalEarned + " P";
       $("parent-level").textContent = "Lv." + levelOf(S.totalEarned);
       $("parent-weak").textContent = weakCount() + " 県";
+      var paBal = $("padjust-balance"); if (paBal) paBal.textContent = S.points;
+      var paTot = $("padjust-total"); if (paTot) paTot.textContent = S.totalEarned;
+      try { updateSyncStatusLine(); } catch (e) {}
       /* question count seg */
       $("qcount-seg").innerHTML = QUESTION_COUNT_OPTIONS.map(function (n) {
         return '<button class="seg-btn' + (questionCount() === n ? " on" : "") + '" data-qcount="' + n + '">' + n + "問</button>";
@@ -2338,6 +2506,7 @@
         correct: session.correct, total: session.questions.length, points: earned, sec: sec
       });
       save();
+      try { sendProgress(); } catch (e) {}
       var ratio = session.questions.length ? session.correct / session.questions.length : 0;
       $("result-cat").src = ratio >= 0.8 ? CAT.celeb : (ratio >= 0.5 ? CAT.smile : CAT.spark);
       $("result-title").textContent = ratio >= 0.8 ? "すごい！ よくできました！" : (ratio >= 0.5 ? "おつかれさま！" : "おつかれさま！ また がんばろう");
@@ -2833,6 +3002,7 @@
         correct: t.cleanItems, total: t.items.length, points: earned, sec: sec
       });
       save();
+      try { sendProgress(); } catch (e) {}
       var ratio = t.items.length ? t.cleanItems / t.items.length : 0;
       $("result-cat").src = ratio >= 0.8 ? CAT.celeb : (ratio >= 0.5 ? CAT.smile : CAT.spark);
       $("result-title").textContent = ratio >= 0.8 ? "すごい！ よくできました！" : (ratio >= 0.5 ? "おつかれさま！" : "おつかれさま！ また がんばろう");
@@ -2866,6 +3036,615 @@
       btn.addEventListener("click", function () { startTyping(parseInt(btn.getAttribute("data-typing-level"), 10)); });
     });
 
+    /* ================= sync / emergency quests ================= */
+    /* 中継所（Google Apps Script）へ進捗を送り、保護者が発行した緊急クエストを受け取る。
+       通信はすべて fire-and-forget：失敗してもゲーム側に例外を投げず、画面にも出さない。 */
+    var RELAY_URL = "https://script.google.com/macros/s/AKfycbyZdGVGdtzJfN3GmzIBx0yGgwq9hS-OOHSq9CSRSqoR4mm-oOvwqXHyAEXU--HzblMI5Q/exec";
+    var TOKEN = "1484";
+    var CHILD = "kanasa";
+    var APP_VERSION = "sync-1";
+    var SYNC_KEY = "kanasa_quest_sync_v1";
+    var SYNC_INTERVAL_MS = 3 * 60 * 1000;
+
+    function defaultSyncState() {
+      return { lastSyncAt: 0, pendingProgress: false, pendingReports: [], claimedQuestIds: [], seenActiveQuestIds: [], questHistory: {}, appliedAdjustmentIds: [], pendingAdjustmentAcks: [], pendingAdjustedSync: false, lastAdjustmentNote: "" };
+    }
+    var SYNC;
+    try {
+      var syncRaw = localStorage.getItem(SYNC_KEY);
+      SYNC = Object.assign(defaultSyncState(), syncRaw ? JSON.parse(syncRaw) : {});
+      if (!Array.isArray(SYNC.pendingReports)) SYNC.pendingReports = [];
+      if (!Array.isArray(SYNC.claimedQuestIds)) SYNC.claimedQuestIds = [];
+      if (!Array.isArray(SYNC.seenActiveQuestIds)) SYNC.seenActiveQuestIds = [];
+      if (typeof SYNC.lastSyncAt !== "number") SYNC.lastSyncAt = 0;
+      if (!SYNC.questHistory || typeof SYNC.questHistory !== "object" || Array.isArray(SYNC.questHistory)) SYNC.questHistory = {};
+      /* ダッシュボード起点のポイント調整（予約式）用。旧セーブには無いキーなので
+         ここで補完する（kanasa_quest_v1 本体の形式は変更しない）。 */
+      if (!Array.isArray(SYNC.appliedAdjustmentIds)) SYNC.appliedAdjustmentIds = [];
+      SYNC.appliedAdjustmentIds = SYNC.appliedAdjustmentIds.map(function (x) { return String(x); });
+      if (!Array.isArray(SYNC.pendingAdjustmentAcks)) SYNC.pendingAdjustmentAcks = [];
+      SYNC.pendingAdjustmentAcks = SYNC.pendingAdjustmentAcks.map(function (x) { return String(x); });
+      if (typeof SYNC.pendingAdjustedSync !== "boolean") SYNC.pendingAdjustedSync = !!SYNC.pendingAdjustedSync;
+      if (typeof SYNC.lastAdjustmentNote !== "string") SYNC.lastAdjustmentNote = "";
+    } catch (e) { SYNC = defaultSyncState(); }
+    function saveSync() {
+      try { localStorage.setItem(SYNC_KEY, JSON.stringify(SYNC)); } catch (e) {}
+    }
+    var questsCache = [];        /* 直近のサーバー側クエスト一覧（サーバー状態が正） */
+    var seenPopupIds = {};       /* この起動でポップアップ表示済みのクエスト id */
+    var claimInFlight = {};
+    var celebrationQueue = [];   /* ホームで見せるお祝い待ち */
+    var questPopupId = null;
+    var celebrationOpen = false;
+    var questsFetchInFlight = false;
+    var adjustmentsFetchInFlight = false;
+    var adjustAckInFlight = {};
+
+    function syncStatusText() {
+      var base = SYNC.lastSyncAt ? ("同期：" + fmtDate(SYNC.lastSyncAt)) : "同期：まだ";
+      if (SYNC.lastAdjustmentNote) base += "（ポイント調整 " + SYNC.lastAdjustmentNote + " を適用済み）";
+      return base;
+    }
+    function updateSyncStatusLine() {
+      var el = $("parent-sync-status");
+      if (el) el.textContent = syncStatusText();
+    }
+
+    /* ---- relay transport: 常に resolve し、失敗時は null を返す（reject しない） ---- */
+    function relayPost(payload) {
+      return new Promise(function (resolve) {
+        try {
+          if (typeof fetch !== "function") { resolve(null); return; }
+          fetch(RELAY_URL, { method: "POST", headers: { "Content-Type": "text/plain" }, body: JSON.stringify(payload) })
+            .then(function (res) {
+              if (!res) { resolve(null); return; }
+              try {
+                res.json().then(function (d) { resolve(d || null); }, function () { resolve(null); });
+              } catch (e2) { resolve(null); }
+            }, function () { resolve(null); });
+        } catch (e) { resolve(null); }
+      });
+    }
+    function relayGet(params) {
+      return new Promise(function (resolve) {
+        try {
+          if (typeof fetch !== "function") { resolve(null); return; }
+          var qs = Object.keys(params).map(function (k) { return encodeURIComponent(k) + "=" + encodeURIComponent(params[k]); }).join("&");
+          fetch(RELAY_URL + "?" + qs, { method: "GET" })
+            .then(function (res) {
+              if (!res) { resolve(null); return; }
+              try {
+                res.json().then(function (d) { resolve(d || null); }, function () { resolve(null); });
+              } catch (e2) { resolve(null); }
+            }, function () { resolve(null); });
+        } catch (e) { resolve(null); }
+      });
+    }
+
+    /* ---- progress snapshot ---- */
+    function snapshotDayKey(ts) {
+      var d = new Date(ts);
+      if (isNaN(d.getTime())) return "";
+      return d.getFullYear() + "-" + ("0" + (d.getMonth() + 1)).slice(-2) + "-" + ("0" + d.getDate()).slice(-2);
+    }
+    function buildSnapshot() {
+      var hist = (S && Array.isArray(S.history)) ? S.history : [];
+      var todayStr = snapshotDayKey(Date.now());
+      var todaySessions = 0;
+      var perMode = {};
+      hist.forEach(function (h) {
+        if (h && snapshotDayKey(h.date) === todayStr) {
+          todaySessions++;
+          perMode[h.mode] = (perMode[h.mode] || 0) + 1;
+        }
+      });
+      /* タイピングは専用の集計保存が無いので、履歴（mode:"typing"、label にレベル）から集計する */
+      var typingLevels = {};
+      var typingSessions = 0, typingClean = 0, typingTotal = 0;
+      hist.forEach(function (h) {
+        if (!h || h.mode !== "typing") return;
+        var mm = /L([0-9]+)/.exec(String(h.label || ""));
+        var lv = mm ? mm[1] : "?";
+        if (!typingLevels[lv]) typingLevels[lv] = { sessions: 0, clean: 0, total: 0 };
+        typingLevels[lv].sessions++;
+        typingLevels[lv].clean += Number(h.correct) || 0;
+        typingLevels[lv].total += Number(h.total) || 0;
+        typingSessions++;
+        typingClean += Number(h.correct) || 0;
+        typingTotal += Number(h.total) || 0;
+      });
+      var nowIso = new Date().toISOString();
+      return {
+        child: CHILD,
+        appVersion: APP_VERSION,
+        sentAt: nowIso,
+        updatedAt: nowIso,
+        balance: S.points,
+        totalEarned: S.totalEarned,
+        level: levelOf(S.totalEarned),
+        settings: { questionCount: questionCount(), pace: pointSpeed() },
+        rewards: (S.rewards || []).map(function (r) { return { name: r.name, cost: r.cost }; }),
+        todayStats: { date: todayStr, sessions: todaySessions, perMode: perMode },
+        typing: { sessions: typingSessions, clean: typingClean, total: typingTotal, levels: typingLevels },
+        recentHistory: hist.slice(-10),
+        recentExchanges: ((S && S.exchanges) || []).slice(-10)
+      };
+    }
+    function sendProgress() {
+      try {
+        var snapshot = buildSnapshot();
+        /* 調整（ダッシュボード予約／保護者メニュー）を適用した直後の最初の同期だけ
+           adjusted:true を付ける。中継所のガード（保存済みより小さい累計を無視）に
+           「意図的な変更」だと伝えるため。成功した同期でフラグを下ろし、
+           失敗したら次の同期でも付け直す。 */
+        var hadAdjusted = !!SYNC.pendingAdjustedSync;
+        if (hadAdjusted) snapshot.adjusted = true;
+        return relayPost({ token: TOKEN, action: "progress", child: CHILD, snapshot: snapshot }).then(function (data) {
+          if (data && data.ok === true) {
+            SYNC.lastSyncAt = Date.now();
+            SYNC.pendingProgress = false;
+            if (hadAdjusted) SYNC.pendingAdjustedSync = false;
+            saveSync();
+            updateSyncStatusLine();
+          } else {
+            SYNC.pendingProgress = true;
+            saveSync();
+          }
+        });
+      } catch (e) {
+        try { SYNC.pendingProgress = true; saveSync(); } catch (e2) {}
+        return Promise.resolve();
+      }
+    }
+
+    /* ---- emergency quests ---- */
+    function findQuest(id) {
+      id = String(id);
+      for (var i = 0; i < questsCache.length; i++) {
+        if (questsCache[i].id === id) return questsCache[i];
+      }
+      return null;
+    }
+    function questEffectiveStatus(q) {
+      /* 報告POSTが未達でも pendingReports にあれば「報告済み」として見せる（楽観表示） */
+      if (q && q.status === "active" && SYNC.pendingReports.indexOf(q.id) >= 0) return "reported";
+      return q ? q.status : "";
+    }
+    /* ---- quest history (local, stored inside SYNC / kanasa_quest_sync_v1) ---- */
+    function questHistoryEnsure() {
+      if (!SYNC.questHistory || typeof SYNC.questHistory !== "object" || Array.isArray(SYNC.questHistory)) SYNC.questHistory = {};
+      return SYNC.questHistory;
+    }
+    function questHistoryUpsert(id, title, points, status, both) {
+      id = String(id);
+      var h = questHistoryEnsure();
+      var now = Date.now();
+      var prev = h[id];
+      var entry = {
+        id: id,
+        title: title != null && String(title) !== "" ? String(title) : (prev ? prev.title : ""),
+        points: (points != null && isFinite(Number(points))) ? Number(points) : (prev ? Number(prev.points) || 0 : 0),
+        status: status || (prev ? prev.status : "active"),
+        /* 'both' クエストかどうか。未指定なら前回の値を引き継ぐ（旧エントリは false 扱い） */
+        both: (typeof both === "boolean") ? both : !!(prev && prev.both),
+        firstSeenAt: prev && typeof prev.firstSeenAt === "number" ? prev.firstSeenAt : now,
+        updatedAt: now
+      };
+      /* done / sibling は終端：サーバー側の古い状態で巻き戻さない */
+      if (prev && (prev.status === "done") && entry.status !== "done") entry.status = "done";
+      if (prev && (prev.status === "sibling") && entry.status !== "sibling") entry.status = "sibling";
+      h[id] = entry;
+      return entry;
+    }
+    function questHistoryMarkDone(id, title, points) {
+      var entry = questHistoryUpsert(id, title, points, "done");
+      entry.status = "done";
+      entry.updatedAt = Date.now();
+      saveSync();
+    }
+    function questHistorySyncFromFetch(serverList) {
+      var h = questHistoryEnsure();
+      var seen = {};
+      (serverList || []).forEach(function (q) {
+        if (!q || q.id == null) return;
+        var id = String(q.id);
+        seen[id] = true;
+        var eff = questEffectiveStatus(q);
+        var prev = h[id];
+        var status = eff || String(q.status || "active");
+        if (SYNC.claimedQuestIds.indexOf(id) >= 0) status = "done";
+        else if (prev && prev.status === "done") status = "done";
+        questHistoryUpsert(id, q.title, q.points, status, q.child === "both");
+      });
+      /* 以前 active/reported/approved で見ていたのに今回の取得から消えたもの → 原則 取り消し（claim済みは done のまま）。
+         ただし 'both' クエストを自分が報告しないまま消えた場合は、きょうだいが先に完了したものとして sibling にする。
+         自分が報告済み（reported/approved）で消えた場合は親の取り消しなので cancelled のまま。 */
+      Object.keys(h).forEach(function (id) {
+        if (seen[id]) return;
+        var e = h[id];
+        if (!e) return;
+        if (SYNC.claimedQuestIds.indexOf(id) >= 0 || e.status === "done") {
+          if (e.status !== "done") { e.status = "done"; e.updatedAt = Date.now(); }
+          return;
+        }
+        if (e.status === "active" || e.status === "reported" || e.status === "approved") {
+          e.status = (e.status === "active" && e.both) ? "sibling" : "cancelled";
+          e.updatedAt = Date.now();
+        }
+      });
+      saveSync();
+    }
+    var QUEST_HISTORY_LABELS = {
+      active: { text: "出題中", cls: "qh-status-active" },
+      reported: { text: "カーチャンかトーチャンの確認待ち", cls: "qh-status-reported" },
+      approved: { text: "承認されたよ", cls: "qh-status-approved" },
+      done: { text: "クリア！", cls: "qh-status-done" },
+      cancelled: { text: "取り消し", cls: "qh-status-cancelled" },
+      sibling: { text: "きょうだいが先にやったよ", cls: "qh-status-sibling" }
+    };
+    function renderQuestHistory() {
+      var list = $("quest-history-list");
+      if (!list) return;
+      var h = questHistoryEnsure();
+      var entries = Object.keys(h).map(function (k) { return h[k]; }).filter(function (e) { return e && e.id != null; });
+      entries.sort(function (a, b) {
+        var tb = (typeof b.updatedAt === "number" ? b.updatedAt : 0) - (typeof a.updatedAt === "number" ? a.updatedAt : 0);
+        if (tb !== 0) return tb;
+        return (typeof b.firstSeenAt === "number" ? b.firstSeenAt : 0) - (typeof a.firstSeenAt === "number" ? a.firstSeenAt : 0);
+      });
+      if (!entries.length) {
+        list.innerHTML = '<div class="qh-empty">まだ 緊急クエストは ないよ。<br />カーチャンかトーチャンから クエストが とどいたら、ここに でるよ。</div>';
+        return;
+      }
+      list.innerHTML = entries.map(function (e) {
+        var lab = QUEST_HISTORY_LABELS[e.status] || QUEST_HISTORY_LABELS.active;
+        var dateStr = "";
+        try { dateStr = fmtDate(typeof e.updatedAt === "number" ? e.updatedAt : (typeof e.firstSeenAt === "number" ? e.firstSeenAt : Date.now())); } catch (err) { dateStr = ""; }
+        return '<div class="qh-item"><div class="qh-item-top"><div class="qh-title">' + esc(e.title || "") + '</div>' +
+          '<div class="qh-points">' + (Number(e.points) || 0) + ' P</div></div>' +
+          '<div class="qh-meta"><span class="qh-status ' + lab.cls + '">' + esc(lab.text) + '</span>' +
+          (dateStr ? '<span class="qh-date">' + esc(dateStr) + '</span>' : "") + '</div></div>';
+      }).join("");
+    }
+    function renderQuestChip() {
+      var area = $("quest-home-area"), list = $("quest-chip-list");
+      if (!area || !list) return;
+      var visible = questsCache.filter(function (q) {
+        var st = questEffectiveStatus(q);
+        return st === "active" || st === "reported";
+      });
+      if (!visible.length) {
+        area.style.display = "none";
+        list.innerHTML = "";
+        return;
+      }
+      area.style.display = "block";
+      list.innerHTML = visible.map(function (q) {
+        var st = questEffectiveStatus(q);
+        if (st === "reported") {
+          return '<div class="quest-row quest-row-reported"><div class="quest-row-main"><div class="quest-row-title">' + esc(q.title) + '</div>' +
+            '<div class="quest-row-sub"><span class="qr-line">ほうこく済み</span><span class="qr-line qr-nowrap">カーチャンかトーチャンの確認待ち</span></div></div></div>';
+        }
+        return '<div class="quest-row" data-quest-open="' + esc(q.id) + '"><div class="quest-row-main"><div class="quest-row-title">' + esc(q.title) + '</div>' +
+          '<div class="quest-row-sub"><span class="quest-points">' + (Number(q.points) || 0) + ' P</span> の ごほうび！</div></div>' +
+          '<button type="button" class="quest-done-btn" data-quest-report="' + esc(q.id) + '">できた！</button></div>';
+      }).join("");
+    }
+    function grantQuestPoints(pts) {
+      /* 通常セッションと同じ上限ルール：totalEarned は満額加算、所持は上限で頭打ち */
+      S.points += pts;
+      S.totalEarned += pts;
+      applyPointsCap();
+      save();
+    }
+    function claimQuest(q) {
+      if (!q || q.id == null) return;
+      var id = String(q.id);
+      if (SYNC.claimedQuestIds.indexOf(id) >= 0) return;
+      if (claimInFlight[id]) return;
+      claimInFlight[id] = true;
+      relayPost({ token: TOKEN, action: "quest_claim", child: CHILD, id: id }).then(function (data) {
+        delete claimInFlight[id];
+        if (!data || data.ok !== true) return;      /* 承認済みでなければ付与しない */
+        if (SYNC.claimedQuestIds.indexOf(id) >= 0) return; /* 二重付与防止 */
+        var pts = Number(data.points);
+        if (!isFinite(pts) || pts < 0) pts = Number(q.points) || 0;
+        grantQuestPoints(pts);
+        SYNC.claimedQuestIds.push(id);
+        saveSync();
+        try { questHistoryMarkDone(id, data.title || q.title || "", pts); } catch (eH) {}
+        celebrationQueue.push({ id: id, title: data.title || q.title || "", points: pts });
+        renderHome();
+        sendProgress();
+        maybeShowQuestPopups();
+      });
+    }
+    function reconcileQuests(serverQuests) {
+      questsCache = (serverQuests || []).filter(function (q) { return q && q.id != null; }).map(function (q) {
+        return { id: String(q.id), title: String(q.title || ""), points: Number(q.points) || 0, status: String(q.status || ""), child: String(q.child || "") };
+      });
+      try { questHistorySyncFromFetch(questsCache); } catch (eH) {}
+      /* pendingReports の掃除：サーバーが reported/approved を返したもの・一覧から消えたものは解除（サーバー状態が正） */
+      var before = SYNC.pendingReports.length;
+      SYNC.pendingReports = SYNC.pendingReports.filter(function (id) {
+        var q = findQuest(id);
+        if (!q) return false;
+        return q.status !== "reported" && q.status !== "approved";
+      });
+      if (SYNC.pendingReports.length !== before) saveSync();
+      renderQuestChip();
+      questsCache.forEach(function (q) {
+        if (q.status === "approved") claimQuest(q);
+      });
+      maybeShowQuestPopups();
+    }
+    function fetchQuests() {
+      if (questsFetchInFlight) return Promise.resolve(false);
+      questsFetchInFlight = true;
+      return relayGet({ token: TOKEN, action: "quests_for", child: CHILD }).then(function (data) {
+        questsFetchInFlight = false;
+        if (!data || data.ok !== true || !Array.isArray(data.quests)) return false;
+        reconcileQuests(data.quests);
+        retryPendingReports();
+        return true;
+      });
+    }
+
+    /* ---- ダッシュボード起点のポイント調整（予約式） ----
+       クエストと同じ取得サイクルで pending の調整を取り込む。子ども向けUIは無し（静かに適用）。
+       二重適用防止：適用した id は SYNC.appliedAdjustmentIds に先に記録してから確認POSTを送る。
+       確認POSTが失敗しても id は記録済みなので再適用はされず、pendingAdjustmentAcks に残った
+       確認POSTだけを後のサイクルで再試行する。 */
+    function postAdjustmentApplied(id) {
+      id = String(id);
+      if (adjustAckInFlight[id]) return Promise.resolve(false);
+      adjustAckInFlight[id] = true;
+      return relayPost({ token: TOKEN, action: "adjust_applied", id: id }).then(function (data) {
+        delete adjustAckInFlight[id];
+        if (data && data.ok === true) {
+          var ix = SYNC.pendingAdjustmentAcks.indexOf(id);
+          if (ix >= 0) { SYNC.pendingAdjustmentAcks.splice(ix, 1); saveSync(); }
+          return true;
+        }
+        if (SYNC.pendingAdjustmentAcks.indexOf(id) < 0) {
+          SYNC.pendingAdjustmentAcks.push(id);
+          saveSync();
+        }
+        return false;
+      });
+    }
+    function retryPendingAdjustmentAcks() {
+      if (!Array.isArray(SYNC.pendingAdjustmentAcks)) SYNC.pendingAdjustmentAcks = [];
+      SYNC.pendingAdjustmentAcks.slice().forEach(function (id) { postAdjustmentApplied(id); });
+    }
+    function fetchAdjustments() {
+      if (adjustmentsFetchInFlight) return Promise.resolve(false);
+      adjustmentsFetchInFlight = true;
+      return relayGet({ token: TOKEN, action: "adjustments_for", child: CHILD }).then(function (data) {
+        adjustmentsFetchInFlight = false;
+        if (!data || data.ok !== true || !Array.isArray(data.adjustments)) {
+          /* 取得自体が失敗（オフライン等）でも、未確認の確認POSTだけは再試行を試みる */
+          try { retryPendingAdjustmentAcks(); } catch (eR) {}
+          return false;
+        }
+        if (!Array.isArray(SYNC.appliedAdjustmentIds)) SYNC.appliedAdjustmentIds = [];
+        if (!Array.isArray(SYNC.pendingAdjustmentAcks)) SYNC.pendingAdjustmentAcks = [];
+        var returnedIds = {};
+        data.adjustments.forEach(function (adj) {
+          if (adj && adj.id != null) returnedIds[String(adj.id)] = true;
+        });
+        /* サーバーがもう pending として返さない未確認 id は、サーバー側で適用済みに
+           なったものとして確認待ちから外す（応答ロスト時の掃除）。 */
+        var cleanedAck = false;
+        SYNC.pendingAdjustmentAcks.slice().forEach(function (id) {
+          if (!returnedIds[id] && !adjustAckInFlight[id]) {
+            var ix = SYNC.pendingAdjustmentAcks.indexOf(id);
+            if (ix >= 0) { SYNC.pendingAdjustmentAcks.splice(ix, 1); cleanedAck = true; }
+          }
+        });
+        if (cleanedAck) saveSync();
+        var newlyApplied = 0;
+        var batchDelta = 0;
+        data.adjustments.forEach(function (adj) {
+          if (!adj || adj.id == null) return;
+          var id = String(adj.id);
+          if (SYNC.appliedAdjustmentIds.indexOf(id) >= 0) {
+            /* 適用済み：二度目は適用しない。確認POSTだけ再試行する
+               （前回の確認が失敗してサーバーではまだ pending のケース）。 */
+            if (SYNC.pendingAdjustmentAcks.indexOf(id) >= 0 || !adjustAckInFlight[id]) {
+              if (SYNC.pendingAdjustmentAcks.indexOf(id) < 0) {
+                SYNC.pendingAdjustmentAcks.push(id);
+                saveSync();
+              }
+              postAdjustmentApplied(id);
+            }
+            return;
+          }
+          var delta = Number(adj.delta);
+          if (!isFinite(delta)) delta = 0;
+          /* 先に適用＋id記録を保存してから確認POSTを送る（POST失敗時の二重適用を防ぐ） */
+          applyPointDelta(delta);
+          SYNC.appliedAdjustmentIds.push(id);
+          if (SYNC.pendingAdjustmentAcks.indexOf(id) < 0) SYNC.pendingAdjustmentAcks.push(id);
+          SYNC.pendingAdjustedSync = true;
+          saveSync();
+          newlyApplied++;
+          batchDelta += delta;
+          postAdjustmentApplied(id);
+        });
+        if (newlyApplied > 0) {
+          SYNC.lastAdjustmentNote = (batchDelta > 0 ? "+" + batchDelta : String(batchDelta)) + " P";
+          saveSync();
+          /* 静かに反映：ポップアップは出さず、表示中の数字だけ更新する */
+          try { renderHome(); } catch (eH) {}
+          try {
+            var pb = $("padjust-balance"); if (pb) pb.textContent = S.points;
+            var pt = $("padjust-total"); if (pt) pt.textContent = S.totalEarned;
+            var pp = $("parent-points"); if (pp) pp.textContent = pointsDisplay().capText;
+            var pto = $("parent-total"); if (pto) pto.textContent = S.totalEarned + " P";
+            var pl = $("parent-level"); if (pl) pl.textContent = "Lv." + levelOf(S.totalEarned);
+          } catch (eP) {}
+          try { updateSyncStatusLine(); } catch (eS) {}
+          /* 適用後の最初の進捗同期には adjusted:true が付く（sendProgress 内で処理） */
+          try { sendProgress(); } catch (eSP) {}
+        }
+        return newlyApplied > 0;
+      });
+    }
+    function postReport(id) {
+      id = String(id);
+      return relayPost({ token: TOKEN, action: "quest_report", child: CHILD, id: id }).then(function (data) {
+        if (data && data.ok === true) {
+          var ix = SYNC.pendingReports.indexOf(id);
+          if (ix >= 0) { SYNC.pendingReports.splice(ix, 1); saveSync(); }
+          var q = findQuest(id);
+          if (q && q.status === "active") q.status = "reported";
+          try { if (q) { questHistoryUpsert(id, q.title, q.points, "reported"); saveSync(); } } catch (eH) {}
+          renderQuestChip();
+          return true;
+        }
+        return false;
+      });
+    }
+    function reportQuest(id) {
+      id = String(id);
+      if (SYNC.pendingReports.indexOf(id) < 0) {
+        SYNC.pendingReports.push(id);
+        saveSync();
+      }
+      try { var qr = findQuest(id); if (qr) { questHistoryUpsert(id, qr.title, qr.points, "reported"); saveSync(); } } catch (eH) {}
+      renderQuestChip();   /* 楽観表示：チップはすぐ報告済みになる */
+      if (questPopupId === id) closeQuestPopup();
+      postReport(id);
+    }
+    function retryPendingReports() {
+      SYNC.pendingReports.slice().forEach(function (id) {
+        var q = findQuest(id);
+        if (q && q.status === "active") postReport(id);
+      });
+    }
+
+    /* ---- quest popups（ホームでのみ表示。セッション中は割り込まない） ---- */
+    function openQuestPopup(q) {
+      if (!q) return;
+      questPopupId = q.id;
+      if (!seenPopupIds[q.id]) {
+        seenPopupIds[q.id] = true;
+        if (SYNC.seenActiveQuestIds.indexOf(q.id) < 0) {
+          SYNC.seenActiveQuestIds.push(q.id);
+          saveSync();
+        }
+      }
+      $("quest-mascot").src = CAT.smile;
+      $("quest-popup-title").textContent = q.title;
+      $("quest-popup-points").textContent = (Number(q.points) || 0) + " P の ごほうび！";
+      $("quest-back").classList.add("open");
+    }
+    function closeQuestPopup() {
+      $("quest-back").classList.remove("open");
+      questPopupId = null;
+      maybeShowQuestPopups();
+    }
+    function showCelebration(c) {
+      celebrationOpen = true;
+      $("celebration-mascot").src = CAT.celeb;
+      $("celebration-text").textContent = "『" + c.title + "』 +" + c.points + "P";
+      $("celebration-back").classList.add("open");
+      try { sndClear(); launchConfetti(); } catch (e) {}
+    }
+    function maybeShowQuestPopups() {
+      try {
+        if (currentScreen !== "scr-home") return;         /* セッション中は出さない（ホームに戻ってから） */
+        if (questPopupId || celebrationOpen) return;
+        var modalBg = $("modal-bg");
+        if (modalBg && modalBg.classList.contains("open")) return;
+        var adultBg = $("adult-bg");
+        if (adultBg && adultBg.classList.contains("open")) return;
+        if (celebrationQueue.length) {
+          showCelebration(celebrationQueue.shift());
+          return;
+        }
+        for (var i = 0; i < questsCache.length; i++) {
+          var q = questsCache[i];
+          if (questEffectiveStatus(q) === "active" && !seenPopupIds[q.id]) {
+            openQuestPopup(q);
+            return;
+          }
+        }
+      } catch (e) {}
+    }
+    $("quest-chip-list").addEventListener("click", function (e) {
+      if (!e.target.closest) return;
+      var btn = e.target.closest("[data-quest-report]");
+      if (btn) { reportQuest(btn.getAttribute("data-quest-report")); return; }
+      var row = e.target.closest("[data-quest-open]");
+      if (row) {
+        var q = findQuest(row.getAttribute("data-quest-open"));
+        if (q && questEffectiveStatus(q) === "active") openQuestPopup(q);
+      }
+    });
+    $("quest-do").addEventListener("click", closeQuestPopup);
+    $("quest-later").addEventListener("click", closeQuestPopup);
+    $("celebration-ok").addEventListener("click", function () {
+      $("celebration-back").classList.remove("open");
+      celebrationOpen = false;
+      renderHome();
+      maybeShowQuestPopups();
+    });
+
+    /* ---- 保護者メニューのポイント調整（端末上） ----
+       残高と累計に同じ量を反映する。ふやすときは既存の加算仕様
+       （累計は満額・残高は上限で頭打ち）、へらすときはどちらも0でフロア。 */
+    function applyPointAdjustment(sign) {
+      var msg = $("padjust-msg");
+      var raw = $("padjust-amount").value.trim();
+      if (!/^[0-9]+$/.test(raw)) {
+        msg.textContent = "調整する量は整数で入力してください。";
+        msg.className = "feedback bad";
+        return;
+      }
+      var amt = parseInt(raw, 10);
+      if (!(amt >= 1 && amt <= 9999999)) {
+        msg.textContent = "調整する量は1〜9,999,999で入力してください。";
+        msg.className = "feedback bad";
+        return;
+      }
+      applyPointDelta(sign * amt);
+      /* 次の進捗同期に adjusted:true を付ける（中継所のガード対策：
+         累計が減っても意図的な調整だと伝える）。フラグは SYNC 側に保持し、
+         同期が成功した時点で sendProgress() が下ろす。 */
+      try {
+        SYNC.pendingAdjustedSync = true;
+        saveSync();
+      } catch (eA) {}
+      renderParent(); renderHome();
+      try { sendProgress(); } catch (e) {}
+      $("padjust-amount").value = "";
+      var done = $("padjust-msg");
+      done.textContent = (sign > 0 ? amt + " P ふやしました。" : amt + " P へらしました。") +
+        "今の残高は " + S.points + " P（累計 " + S.totalEarned + " P・Lv." + levelOf(S.totalEarned) + "）です。";
+      done.className = "feedback good";
+    }
+    $("padjust-plus").addEventListener("click", function () { applyPointAdjustment(1); });
+    $("padjust-minus").addEventListener("click", function () { applyPointAdjustment(-1); });
+
+    /* ---- sync triggers ---- */
+    function syncCycle() {
+      try { sendProgress(); } catch (e) {}
+      try { fetchQuests(); } catch (e) {}
+      try { fetchAdjustments(); } catch (e) {}
+    }
+    function startSync() {
+      try { $("quest-mascot").src = CAT.smile; } catch (e) {}
+      try { $("celebration-mascot").src = CAT.celeb; } catch (e) {}
+      updateSyncStatusLine();
+      syncCycle();
+      setInterval(syncCycle, SYNC_INTERVAL_MS);
+      document.addEventListener("visibilitychange", function () {
+        if (!document.hidden) syncCycle();
+      });
+    }
+
     /* ================= 表示領域フィット（LINE内ブラウザ等のツールバー分を差し引く） ================= */
     function fitAppHeight() {
       var h = (window.visualViewport && window.visualViewport.height) || window.innerHeight;
@@ -2880,7 +3659,7 @@
     document.addEventListener("touchmove", function (e) {
       if (e.target && e.target.closest && e.target.closest("input, textarea, select")) return;
       /* ホーム・保護者メニュー・ごほうび・タイピング設定画面のスクロールボックスの中だけはタッチスクロールを許可する */
-      if (e.target && e.target.closest && e.target.closest("#scr-home .scroll-box, #scr-parent .scroll-box, #scr-rewards .scroll-box, #scr-typing-setup .scroll-box, #scr-result #result-miss-list")) return;
+      if (e.target && e.target.closest && e.target.closest("#scr-home .scroll-box, #scr-parent .scroll-box, #scr-rewards .scroll-box, #scr-typing-setup .scroll-box, #scr-quest-history .scroll-box, #scr-result #result-miss-list")) return;
       if (e.cancelable) e.preventDefault();
     }, { passive: false });
 
@@ -2889,6 +3668,7 @@
     $("home-status-cat").src = CAT.spark;
     $("quiz-cat").src = CAT.think;
     renderHome();
+    startSync();
     </script>
   </body>
 </html>
